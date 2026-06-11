@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natanaele Pogliaghi — Tecnico Teatrale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  CONFIGURAZIONE ESTERNA                                      ║
+  ║  Carica config.js PRIMA di questo file HTML.                 ║
+  ║  Tutti i testi, contatti, opzioni e API key stanno lì.       ║
+  ║  Per aggiornare testi o opzioni: modifica SOLO config.js.    ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<script src="config.js"></script>
+
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f0e8;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --red: #b8372b;
+    --gray: #3a3a3a;
+    --gray-light: #888;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cv {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    padding: 0.5rem 1.2rem;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .nav-cv:hover { background: var(--gold-light); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 3rem 5rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-curtain {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #1a0a00 0%, #0a0a0a 50%, #0a0505 100%);
+    overflow: hidden;
+  }
+
+  .hero-curtain::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: -10%;
+    width: 60%; height: 140%;
+    background: linear-gradient(180deg, rgba(184,55,43,0.08) 0%, transparent 70%);
+    transform: skewX(-8deg);
+  }
+
+  .hero-curtain::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 5%;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, transparent, var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  .hero-stage-line {
+    position: absolute;
+    top: 25%; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-name span {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(245,240,232,0.3);
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+    color: var(--gray-light);
+    max-width: 420px;
+    line-height: 1.7;
+    border-left: 2px solid var(--gold);
+    padding-left: 1.2rem;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    right: 3rem; bottom: 5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    z-index: 2;
+  }
+
+  .hero-scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6); }
+  }
+
+  /* ── SECTION LAYOUT ── */
+  section {
+    padding: 6rem 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex; align-items: baseline; gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* ── CALENDARIO ── */
+  #calendario { background: #0d0d0d; }
+
+  .calendar-intro {
+    color: var(--gray-light);
+    font-size: 0.9rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* VIEW TOGGLE */
+  .view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .view-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.4rem;
+    background: transparent;
+    color: var(--gray-light);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-right: 1px solid var(--border);
+  }
+
+  .view-btn:last-child { border-right: none; }
+  .view-btn.active { background: var(--gold); color: var(--black); }
+  .view-btn:hover:not(.active) { color: var(--white); }
+
+  /* LEGEND */
+  .cal-legend {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .legend-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+  }
+
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-disponibile { background: #4ade80; }
+  .dot-occupato { background: var(--red); }
+  .dot-tentativo { background: var(--gold); }
+
+  /* CALENDAR WRAPPER */
+  .calendar-wrapper {
+    background: #111;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  /* VIEW STATES */
+  .cal-month { display: none; }
+  .cal-agenda { display: none; }
+  .cal-month.active { display: block; }
+  .cal-agenda.active { display: block; }
+
+  /* ── AGENDA LAYOUT ── */
+  .agenda-split {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .agenda-top {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .agenda-bottom {
+    border-top: 1px solid var(--border);
+  }
+
+  .agenda-bottom-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0.8rem 1.5rem 0;
+    opacity: 0.6;
+  }
+
+  /* Month header */
+  .month-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .month-nav {
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  .month-nav-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--white); cursor: pointer;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+
+  .month-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .month-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 160px;
+    text-align: center;
+  }
+
+  .today-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gray-light);
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .today-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Days grid */
+  .days-header {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-label {
+    padding: 0.6rem 0;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: minmax(72px, auto);
+  }
+
+  .day-cell {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem;
+    min-height: 72px;
+    cursor: default;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .day-cell:nth-child(7n) { border-right: none; }
+  .day-cell.other-month .day-num { color: #333; }
+  .day-cell.today { background: rgba(201,168,76,0.06); }
+
+  .day-cell.today .day-num {
+    background: var(--gold);
+    color: var(--black);
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .day-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gray-light);
+    margin-bottom: 0.3rem;
+  }
+
+  .day-events { display: flex; flex-direction: column; gap: 2px; }
+
+  .event-pill {
+    font-size: 0.58rem;
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  .event-pill.occupato { background: rgba(184,55,43,0.7); color: #ffd0cc; }
+  .event-pill.disponibile { background: rgba(74,222,128,0.2); color: #86efac; }
+  .event-pill.tentativo { background: rgba(201,168,76,0.25); color: var(--gold-light); }
+
+  /* AGENDA VIEW */
+  .agenda-list { padding: 1rem; }
+
+  .agenda-group { margin-bottom: 2rem; }
+
+  .agenda-month-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.8rem;
+  }
+
+  .agenda-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.15s;
+  }
+
+  .agenda-item:hover { background: rgba(255,255,255,0.02); }
+
+  .agenda-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gray-light);
+  }
+
+  .agenda-date strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--white);
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .agenda-title {
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-bottom: 0.2rem;
+  }
+
+  .agenda-venue {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gray-light);
+    letter-spacing: 0.05em;
+  }
+
+  .agenda-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  .badge-occupato { background: rgba(184,55,43,0.2); color: #f87171; border: 1px solid rgba(184,55,43,0.4); }
+  .badge-disponibile { background: rgba(74,222,128,0.1); color: #86efac; border: 1px solid rgba(74,222,128,0.3); }
+  .badge-tentativo { background: rgba(201,168,76,0.1); color: var(--gold-light); border: 1px solid var(--border); }
+
+  /* ── CONTATTI ── */
+  #contatti { background: #0a0a0a; }
+
+  .contatti-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .contatti-pitch {
+    font-size: 1rem;
+    color: var(--gray-light);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+
+  .contatti-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--gray-light);
+    margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+
+  .contatti-meta .icon {
+    width: 26px; height: 26px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    flex-shrink: 0;
+  }
+
+  .response-time {
+    margin-top: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  /* DIRECT CONTACT BUTTONS */
+  .contact-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .cta-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.4rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-btn::after {
+    content: '→';
+    position: absolute;
+    right: 1.4rem;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: all 0.2s ease;
+  }
+
+  .cta-btn:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .cta-btn .btn-icon {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .cta-btn .btn-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .cta-btn .btn-label span {
+    font-size: 0.6rem;
+    opacity: 0.6;
+    text-transform: none;
+    letter-spacing: 0.05em;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+  }
+
+  .cta-whatsapp {
+    background: rgba(37,211,102,0.08);
+    border-color: rgba(37,211,102,0.3);
+    color: #4ade80;
+  }
+  .cta-whatsapp:hover {
+    background: rgba(37,211,102,0.15);
+    border-color: rgba(37,211,102,0.6);
+    transform: translateX(3px);
+  }
+
+  .cta-telegram {
+    background: rgba(0,136,204,0.08);
+    border-color: rgba(0,136,204,0.3);
+    color: #60c9f5;
+  }
+  .cta-telegram:hover {
+    background: rgba(0,136,204,0.15);
+    border-color: rgba(0,136,204,0.6);
+    transform: translateX(3px);
+  }
+
+  .cta-email {
+    background: rgba(201,168,76,0.07);
+    border-color: var(--border);
+    color: var(--gold-light);
+  }
+  .cta-email:hover {
+    background: rgba(201,168,76,0.14);
+    border-color: var(--gold);
+    transform: translateX(3px);
+  }
+
+  .cta-form-toggle {
+    background: transparent;
+    border-color: #333;
+    color: var(--gray-light);
+    width: 100%;
+  }
+  .cta-form-toggle:hover {
+    border-color: var(--gray-light);
+    color: var(--white);
+  }
+  .cta-form-toggle.active {
+    background: rgba(255,255,255,0.04);
+    border-color: var(--gray-light);
+    color: var(--white);
+  }
+
+  /* FORM PANEL */
+  .form-panel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s ease,
+                margin-top 0.3s ease;
+    margin-top: 0;
+  }
+
+  .form-panel.open {
+    max-height: 900px;
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
+
+  /* FORM FIELDS */
+  .contact-form {
+    display: flex; flex-direction: column; gap: 1.2rem;
+    padding-top: 0.5rem;
+  }
+
+  .form-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder { color: #444; }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--gold);
+    background: #131313;
+  }
+
+  .field select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+
+  .field select option { background: #111; }
+  .field textarea { resize: vertical; min-height: 100px; }
+
+  .submit-btn {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 1rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .submit-btn:hover {
+    background: var(--gold-light);
+    transform: translateX(3px);
+  }
+
+  .submit-arrow { font-size: 1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: #333;
+  }
+
+  .day-cell.past-day { opacity: 0.35; }
+  .day-cell.past-day .day-num { color: #444; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-label { animation: fadeUp 0.6s ease both; }
+  .hero-name { animation: fadeUp 0.6s 0.1s ease both; }
+  .hero-tagline { animation: fadeUp 0.6s 0.2s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 0 1.5rem 4rem; }
+    section { padding: 4rem 1.5rem; }
+    .contatti-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .days-grid { grid-auto-rows: minmax(50px, auto); }
+    .day-cell { min-height: 50px; padding: 0.3rem; }
+    footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo" id="nav-logo"></span>
+  <ul class="nav-links">
+    <li><a href="#calendario">Calendario</a></li>
+    <li><a href="#contatti">Contatti</a></li>
+  </ul>
+  <a class="nav-cv" id="nav-cv" href="#" target="_blank">↓ Scarica CV</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-curtain">
+    <div class="hero-stage-line"></div>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-label" id="hero-label"></p>
+    <h1 class="hero-name" id="hero-name"></h1>
+    <p class="hero-tagline" id="hero-tagline"></p>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    Calendario
+  </div>
+</section>
+
+<!-- CALENDARIO -->
+<section id="calendario">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title" id="cal-title"></h2>
+  </div>
+
+  <p class="calendar-intro" id="cal-intro"></p>
+
+  <div class="view-toggle">
+    <button class="view-btn active" onclick="switchView('month', this)">Mese</button>
+    <button class="view-btn" onclick="switchView('agenda', this)">Agenda</button>
+    <button class="view-btn" onclick="refreshCalendar(this)" title="Ricarica dal calendario Google">↻ Aggiorna</button>
+  </div>
+
+  <div class="cal-legend">
+    <span class="legend-item"><span class="legend-dot dot-disponibile"></span>Disponibile (default)</span>
+    <span class="legend-item"><span class="legend-dot dot-occupato"></span>Impegnato</span>
+    <span class="legend-item"><span class="legend-dot dot-tentativo"></span>Da confermare</span>
+  </div>
+
+  <div class="calendar-wrapper">
+
+    <!-- MONTH VIEW -->
+    <div class="cal-month active" id="view-month">
+      <div class="month-header">
+        <div class="month-nav">
+          <button class="month-nav-btn" onclick="prevMonth()">‹</button>
+          <span class="month-name" id="monthLabel"></span>
+          <button class="month-nav-btn" onclick="nextMonth()">›</button>
+        </div>
+        <button class="today-btn" onclick="goToday()">Oggi</button>
+      </div>
+      <div class="days-header">
+        <span class="day-label">Lun</span><span class="day-label">Mar</span>
+        <span class="day-label">Mer</span><span class="day-label">Gio</span>
+        <span class="day-label">Ven</span><span class="day-label">Sab</span>
+        <span class="day-label">Dom</span>
+      </div>
+      <div class="days-grid" id="daysGrid"></div>
+    </div>
+
+    <!-- AGENDA VIEW -->
+    <div class="cal-agenda" id="view-agenda">
+      <div class="agenda-split">
+
+        <div class="agenda-top">
+          <div class="agenda-list" id="agendaList"></div>
+        </div>
+
+        <div class="agenda-bottom">
+          <div class="agenda-bottom-label">Vista mensile</div>
+          <div class="month-header">
+            <div class="month-nav">
+              <button class="month-nav-btn" onclick="prevMonth()">‹</button>
+              <span class="month-name" id="monthLabelAgenda"></span>
+              <button class="month-nav-btn" onclick="nextMonth()">›</button>
+            </div>
+            <button class="today-btn" onclick="goToday()">Oggi</button>
+          </div>
+          <div class="days-header">
+            <span class="day-label">Lun</span><span class="day-label">Mar</span>
+            <span class="day-label">Mer</span><span class="day-label">Gio</span>
+            <span class="day-label">Ven</span><span class="day-label">Sab</span>
+            <span class="day-label">Dom</span>
+          </div>
+          <div class="days-grid" id="daysGridAgenda"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTATTI -->
+<section id="contatti">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title" id="contatti-title"></h2>
+  </div>
+
+  <div class="contatti-layout">
+
+    <div class="contatti-left">
+      <p class="contatti-pitch" id="contatti-pitch"></p>
+      <div class="contatti-meta">
+        <span class="icon">@</span>
+        <span id="contatti-email"></span>
+      </div>
+      <div class="contatti-meta">
+        <span class="icon">↳</span>
+        <span id="contatti-zona"></span>
+      </div>
+      <div class="response-time" id="contatti-response"></div>
+    </div>
+
+    <div class="contatti-right">
+
+      <div class="contact-buttons">
+
+        <a class="cta-btn cta-whatsapp" id="btn-whatsapp" href="#" target="_blank" rel="noopener">
+          <span class="btn-icon">💬</span>
+          <span class="btn-label">
+            <strong id="btn-whatsapp-label"></strong>
+            <span id="btn-whatsapp-sub"></span>
+          </span>
+        </a>
+
+        <a class="cta-btn cta-telegram" id="btn-telegram" href="#" target="_blank" rel="noopener">
+          <span class="btn-icon">✈️</span>
+          <span class="btn-label">
+            <strong id="btn-telegram-label"></strong>
+            <span id="btn-telegram-sub"></span>
+          </span>
+        </a>
+
+        <a class="cta-btn cta-email" id="btn-email" href="#">
+          <span class="btn-icon">✉️</span>
+          <span class="btn-label">
+            <strong id="btn-email-label"></strong>
+            <span id="btn-email-sub"></span>
+          </span>
+        </a>
+
+        <button class="cta-btn cta-form-toggle" id="form-toggle-btn" onclick="toggleForm()">
+          <span class="btn-icon">📋</span>
+          <span class="btn-label">
+            <strong id="btn-form-label"></strong>
+            <span id="btn-form-sub"></span>
+          </span>
+        </button>
+
+      </div>
+
+      <!-- FORM PANEL -->
+      <div class="form-panel" id="form-panel">
+        <div class="contact-form">
+
+          <div class="form-row">
+            <div class="field">
+              <label id="lbl-nome"></label>
+              <input id="f-nome" type="text">
+            </div>
+            <div class="field">
+              <label id="lbl-email"></label>
+              <input id="f-email" type="email">
+            </div>
+          </div>
+
+          <div class="field">
+            <label id="lbl-tipo"></label>
+            <select id="f-tipo">
+              <!-- Opzioni iniettate da config.js -->
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label id="lbl-start"></label>
+              <input id="f-start" type="date">
+            </div>
+            <div class="field">
+              <label id="lbl-end"></label>
+              <input id="f-end" type="date">
+            </div>
+          </div>
+
+          <div class="field">
+            <label id="lbl-venue"></label>
+            <input id="f-venue" type="text">
+          </div>
+
+          <div class="field">
+            <label id="lbl-msg"></label>
+            <textarea id="f-msg"></textarea>
+          </div>
+
+          <!-- Honeypot anti-spam -->
+          <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+            <label for="f-website">Non compilare questo campo</label>
+            <input id="f-website" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div id="form-status" style="display:none; padding:0.7rem 1rem; margin-bottom:0.5rem; font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.05em;"></div>
+
+          <button class="submit-btn" type="button" id="submit-btn" onclick="inviaRichiesta()">
+            <span id="submit-label"></span>
+            <span class="submit-arrow" id="submit-arrow">→</span>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-name" id="footer-name"></span>
+  <span class="footer-copy" id="footer-copy"></span>
+</footer>
+
+<script>
+// =============================================================
+//  FUNZIONE DI BOOT — applica SITE_CONFIG all'HTML
+//  Chiamata prima di qualsiasi altra cosa.
+// =============================================================
+function applyConfig() {
+  const C = SITE_CONFIG; // definito in config.js
+
+  // ── Titolo pagina ──
+  document.title = `${C.identity.nomeCompleto} — ${C.identity.professione}`;
+
+  // ── Nav ──
+  document.getElementById('nav-logo').textContent = C.identity.navLogo;
+  const navCv = document.getElementById('nav-cv');
+  navCv.href = C.contatti.linkCv;
+
+  // ── Hero ──
+  document.getElementById('hero-label').textContent =
+    `${C.identity.professione} · ${C.identity.citta}`;
+
+  const heroName = document.getElementById('hero-name');
+  // Divide il nome completo: prima parte normale, seconda parte outline
+  const parts = C.identity.nomeCompleto.split(' ');
+  // Struttura: Prima riga = nome, Seconda riga (span, outline) = secondo nome se c'è, Terza = cognome
+  if (parts.length >= 3) {
+    heroName.innerHTML =
+      `${parts[0]}<br><span>${parts[1]}</span>${parts[2]}`;
+  } else {
+    heroName.innerHTML = C.identity.nomeCompleto;
+  }
+
+  document.getElementById('hero-tagline').innerHTML =
+    C.identity.tagline.replace('\n', '<br>');
+
+  // ── Calendario ──
+  document.getElementById('cal-title').textContent = C.testiCalendario.titolo;
+  document.getElementById('cal-intro').textContent = C.testiCalendario.intro;
+
+  // ── Contatti — colonna sinistra ──
+  document.getElementById('contatti-title').textContent = C.testiContatti.titolo;
+  document.getElementById('contatti-pitch').innerHTML =
+    C.testiContatti.pitch.replace('\n', '<br>');
+  document.getElementById('contatti-email').textContent = C.contatti.email;
+  document.getElementById('contatti-zona').textContent  = C.contatti.zona;
+  document.getElementById('contatti-response').textContent = C.contatti.tempoRisposta;
+
+  // ── Contatti — pulsanti ──
+  const wa = document.getElementById('btn-whatsapp');
+  wa.href = C.contatti.whatsapp;
+  document.getElementById('btn-whatsapp-label').textContent = C.testiContatti.whatsappLabel;
+  document.getElementById('btn-whatsapp-sub').textContent   = C.testiContatti.whatsappSub;
+
+  const tg = document.getElementById('btn-telegram');
+  tg.href = C.contatti.telegram;
+  document.getElementById('btn-telegram-label').textContent = C.testiContatti.telegramLabel;
+  document.getElementById('btn-telegram-sub').textContent   = C.testiContatti.telegramSub;
+
+  const em = document.getElementById('btn-email');
+  em.href = `mailto:${C.contatti.email}`;
+  document.getElementById('btn-email-label').textContent = C.testiContatti.emailLabel;
+  document.getElementById('btn-email-sub').textContent   = C.testiContatti.emailSub;
+
+  document.getElementById('btn-form-label').textContent = C.testiContatti.formToggleLabel;
+  document.getElementById('btn-form-sub').textContent   = C.testiContatti.formToggleSub;
+
+  // ── Form — etichette ──
+  document.getElementById('lbl-nome').textContent  = C.form.labelNome;
+  document.getElementById('lbl-email').textContent = C.form.labelEmail;
+  document.getElementById('lbl-tipo').textContent  = C.form.labelTipo;
+  document.getElementById('lbl-start').textContent = C.form.labelStart;
+  document.getElementById('lbl-end').textContent   = C.form.labelEnd;
+  document.getElementById('lbl-venue').textContent = C.form.labelVenue;
+  document.getElementById('lbl-msg').textContent   = C.form.labelMsg;
+
+  // ── Form — placeholder ──
+  document.getElementById('f-nome').placeholder  = C.form.placeholderNome;
+  document.getElementById('f-email').placeholder = C.form.placeholderEmail;
+  document.getElementById('f-venue').placeholder = C.form.placeholderVenue;
+  document.getElementById('f-msg').placeholder   = C.form.placeholderMsg;
+
+  // ── Form — opzioni select tipo produzione ──
+  const sel = document.getElementById('f-tipo');
+  sel.innerHTML = '<option value="" disabled selected>Seleziona...</option>';
+  C.form.opzioniTipo.forEach(opt => {
+    const o = document.createElement('option');
+    o.textContent = opt;
+    sel.appendChild(o);
+  });
+
+  // ── Form — submit label ──
+  document.getElementById('submit-label').textContent = C.form.submitLabel;
+
+  // ── Footer ──
+  document.getElementById('footer-name').textContent = C.identity.nomeCompleto;
+  document.getElementById('footer-copy').textContent = C.identity.footerCopy;
+}
+
+// =============================================================
+//  CALENDARIO — LOGICA
+// =============================================================
+
+// =============================================================
+//  SICUREZZA API KEY — note
+//
+//  OPZIONE A — PROXY SERVERLESS (raccomandata per produzione):
+//    Crea una Cloudflare Worker / Vercel Edge Function / Netlify
+//    Function che riceve { calendarId, timeMin, timeMax } e chiama
+//    Google usando la chiave salvata come variabile d'ambiente.
+//    Il frontend chiama il tuo endpoint, mai Google direttamente.
+//
+//  OPZIONE B — RESTRIZIONE API KEY (sito statico senza backend):
+//    Vai su console.cloud.google.com → API Key → Restrizioni
+//    applicazione → Referrer HTTP → aggiungi il tuo dominio.
+//    La chiave è inutilizzabile da altri domini.
+// =============================================================
+
+const CONFIG = {
+  API_KEY:   SITE_CONFIG.integrazioni.gcalApiKey,
+  CALENDARS: Object.fromEntries(
+    SITE_CONFIG.integrazioni.calendari.map(c => [c.type, c])
+  ),
+};
+
+const FORMSPARK_URL = SITE_CONFIG.integrazioni.formsparkUrl;
+
+// -- STATE --
+const today = new Date();
+let currentYear  = today.getFullYear();
+let currentMonth = today.getMonth();
+let EVENTS = [];
+let isLoading = false;
+
+const MONTHS_IT = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+                   'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+
+function formatDate(d) {
+  const y   = d.getFullYear();
+  const m   = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function getEventsForDate(dateStr) {
+  return EVENTS.filter(e => e.date === dateStr);
+}
+
+// -- LOADING STATE --
+function setLoading(state) {
+  isLoading = state;
+  const wrapper = document.querySelector('.calendar-wrapper');
+  let overlay = document.getElementById('cal-loading');
+  if (state) {
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'cal-loading';
+      overlay.style.cssText = `
+        position:absolute; inset:0; background:rgba(10,10,10,0.7);
+        display:flex; align-items:center; justify-content:center;
+        font-family:'DM Mono',monospace; font-size:0.7rem;
+        letter-spacing:0.15em; color:var(--gold); z-index:10;
+      `;
+      overlay.innerHTML = '<span style="animation:pulse 1.2s ease-in-out infinite">Caricamento eventi...</span>';
+      wrapper.style.position = 'relative';
+      wrapper.appendChild(overlay);
+    }
+  } else {
+    if (overlay) overlay.remove();
+  }
+}
+
+// -- FETCH EVENTS FROM GOOGLE CALENDAR API --
+async function fetchCalendarEvents() {
+  const rangeStart = new Date();
+  rangeStart.setMonth(rangeStart.getMonth() - 3);
+  const rangeEnd = new Date();
+  rangeEnd.setMonth(rangeEnd.getMonth() + 6);
+
+  const timeMin = rangeStart.toISOString();
+  const timeMax = rangeEnd.toISOString();
+
+  setLoading(true);
+  EVENTS = [];
+
+  const oldErr = document.getElementById('cal-error');
+  if (oldErr) oldErr.remove();
+
+  try {
+    const fetches = Object.values(CONFIG.CALENDARS).map(async (cal) => {
+      const params = new URLSearchParams({
+        key: CONFIG.API_KEY,
+        timeMin,
+        timeMax,
+        singleEvents: 'true',
+        orderBy:      'startTime',
+        maxResults:   '250',
+      });
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?${params.toString()}`;
+
+      let res;
+      try { res = await fetch(url); }
+      catch (networkErr) {
+        throw new Error(`Impossibile contattare Google Calendar. (${networkErr.message})`);
+      }
+
+      if (!res.ok) {
+        let hint = '';
+        if      (res.status === 403) hint = " → Il calendario non è pubblico";
+        else if (res.status === 400) hint = " → ID calendario non valido";
+        else if (res.status === 401) hint = " → API Key non valida o scaduta";
+        else if (res.status === 404) hint = " → Calendario non trovato";
+        throw new Error(`Errore ${res.status} su "${cal.label}"${hint}`);
+      }
+
+      const data  = await res.json();
+      const items = data.items || [];
+
+      return items.flatMap(item => {
+        const startRaw = item.start.date     || item.start.dateTime;
+        const endRaw   = item.end.date       || item.end.dateTime;
+        const start    = new Date(startRaw);
+        const end      = new Date(endRaw);
+        const isAllDay = !!item.start.date;
+        const loopEnd  = isAllDay
+          ? end
+          : new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
+
+        const days = [];
+        const cursor = new Date(start);
+        while (cursor < loopEnd) {
+          days.push({
+            date:  formatDate(cursor),
+            title: item.summary || cal.label,
+            venue: item.location || '',
+            type:  cal.type,
+          });
+          cursor.setDate(cursor.getDate() + 1);
+        }
+        return days;
+      });
+    });
+
+    const results = await Promise.allSettled(fetches);
+    const errors  = [];
+    results.forEach(r => {
+      if (r.status === 'fulfilled') EVENTS.push(...r.value);
+      else errors.push(r.reason.message);
+    });
+    if (errors.length > 0) showCalError(errors.join('<br>'));
+
+  } catch (err) {
+    console.error('Google Calendar API error:', err);
+    showCalError(err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function showCalError(msg) {
+  const wrapper = document.querySelector('.calendar-wrapper');
+  let errEl = document.getElementById('cal-error');
+  if (!errEl) {
+    errEl = document.createElement('div');
+    errEl.id = 'cal-error';
+    errEl.style.cssText = `
+      padding:1.2rem 1.5rem; background:rgba(184,55,43,0.15);
+      border-left:2px solid var(--red);
+      font-family:'DM Mono',monospace; font-size:0.7rem;
+      color:#f87171; line-height:1.6;
+    `;
+    wrapper.prepend(errEl);
+  }
+  errEl.innerHTML = `(!) Impossibile caricare gli eventi: <em>${msg}</em><br>
+    Verifica la API Key e gli ID calendario in config.js.`;
+}
+
+// -- MONTH VIEW --
+function getDayStatus(dateStr) {
+  const evs = getEventsForDate(dateStr);
+  if (evs.some(e => e.type === 'occupato'))
+    return { type: 'occupato',  label: evs.find(e => e.type === 'occupato').title };
+  if (evs.some(e => e.type === 'tentativo'))
+    return { type: 'tentativo', label: evs.find(e => e.type === 'tentativo').title };
+  return { type: 'disponibile', label: 'Disponibile' };
+}
+
+function renderMonthIntoGrid(gridId, labelId) {
+  const labelEl = document.getElementById(labelId);
+  if (labelEl) labelEl.textContent = `${MONTHS_IT[currentMonth]} ${currentYear}`;
+
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  let startDow = firstDay.getDay();
+  startDow = (startDow === 0) ? 6 : startDow - 1;
+
+  const daysInMonth  = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+  const totalCells   = Math.ceil((startDow + daysInMonth) / 7) * 7;
+
+  for (let i = 0; i < totalCells; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell';
+
+    let day, month, year, dateStr, isOther = false;
+
+    if (i < startDow) {
+      day = prevMonthDays - startDow + i + 1;
+      month = currentMonth - 1; year = currentYear;
+      if (month < 0) { month = 11; year--; }
+      isOther = true;
+    } else if (i >= startDow + daysInMonth) {
+      day = i - startDow - daysInMonth + 1;
+      month = currentMonth + 1; year = currentYear;
+      if (month > 11) { month = 0; year++; }
+      isOther = true;
+    } else {
+      day = i - startDow + 1;
+      month = currentMonth; year = currentYear;
+    }
+
+    dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const todayStr = formatDate(today);
+    const isToday  = dateStr === todayStr;
+    const isPast   = dateStr < todayStr;
+
+    if (isOther) cell.classList.add('other-month');
+    if (isToday) cell.classList.add('today');
+    if (isPast && !isOther) cell.classList.add('past-day');
+
+    const numEl = document.createElement('div');
+    numEl.className = 'day-num';
+    numEl.textContent = day;
+    cell.appendChild(numEl);
+
+    if (!isOther && !isPast) {
+      const { type, label } = getDayStatus(dateStr);
+      const eventsEl = document.createElement('div');
+      eventsEl.className = 'day-events';
+      const pill = document.createElement('div');
+      pill.className = `event-pill ${type}`;
+      pill.textContent = label;
+      eventsEl.appendChild(pill);
+      cell.appendChild(eventsEl);
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+function renderMonth() {
+  renderMonthIntoGrid('daysGrid', 'monthLabel');
+  if (document.getElementById('view-agenda').classList.contains('active')) {
+    renderMonthIntoGrid('daysGridAgenda', 'monthLabelAgenda');
+  }
+}
+
+// -- AGENDA VIEW --
+function renderAgenda() {
+  const list = document.getElementById('agendaList');
+  list.innerHTML = '';
+
+  const start = new Date(formatDate(today) + 'T00:00:00');
+  const end   = new Date();
+  end.setMonth(end.getMonth() + 3);
+
+  const allDays = [];
+  const cursor  = new Date(start);
+  while (cursor <= end) {
+    allDays.push(formatDate(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  const groups = {};
+  allDays.forEach(dateStr => {
+    const d   = new Date(dateStr + 'T00:00:00');
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    if (!groups[key])
+      groups[key] = { label: `${MONTHS_IT[d.getMonth()]} ${d.getFullYear()}`, days: [] };
+    groups[key].days.push(dateStr);
+  });
+
+  Object.values(groups).forEach(g => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'agenda-group';
+    groupEl.innerHTML = `<div class="agenda-month-label">${g.label}</div>`;
+
+    g.days.forEach(dateStr => {
+      const d = new Date(dateStr + 'T00:00:00');
+      const dayNames = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+      const { type, label } = getDayStatus(dateStr);
+      const ev    = getEventsForDate(dateStr).find(e => e.type === type);
+      const venue = ev ? ev.venue : '';
+
+      const item = document.createElement('div');
+      item.className = 'agenda-item';
+      if (type === 'disponibile') item.style.opacity = '0.55';
+      item.innerHTML = `
+        <div class="agenda-date">
+          <strong>${d.getDate()}</strong>
+          ${dayNames[d.getDay()]}
+        </div>
+        <div class="agenda-info">
+          <div class="agenda-title">${label}</div>
+          ${venue ? `<div class="agenda-venue">${venue}</div>` : ''}
+        </div>
+        <span class="agenda-badge badge-${type}">${
+          type === 'occupato'  ? 'Impegnato' :
+          type === 'tentativo' ? 'Da conf.'  : 'Libero'
+        }</span>
+      `;
+      groupEl.appendChild(item);
+    });
+
+    list.appendChild(groupEl);
+  });
+
+  renderMonthIntoGrid('daysGridAgenda', 'monthLabelAgenda');
+}
+
+// -- CONTROLS --
+function switchView(v, btn) {
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('view-month').classList.remove('active');
+  document.getElementById('view-agenda').classList.remove('active');
+  if (v === 'month') {
+    document.getElementById('view-month').classList.add('active');
+    renderMonth();
+  } else {
+    document.getElementById('view-agenda').classList.add('active');
+    renderAgenda();
+  }
+}
+
+async function refreshCalendar(btn) {
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
+  await fetchCalendarEvents();
+  const agendaActive = document.getElementById('view-agenda').classList.contains('active');
+  if (agendaActive) renderAgenda(); else renderMonth();
+  if (btn) { btn.textContent = '↻ Aggiorna'; btn.disabled = false; }
+}
+
+function prevMonth() {
+  currentMonth--;
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderMonth();
+  if (document.getElementById('view-agenda').classList.contains('active'))
+    renderMonthIntoGrid('daysGridAgenda', 'monthLabelAgenda');
+}
+
+function nextMonth() {
+  currentMonth++;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  renderMonth();
+  if (document.getElementById('view-agenda').classList.contains('active'))
+    renderMonthIntoGrid('daysGridAgenda', 'monthLabelAgenda');
+}
+
+function goToday() {
+  currentYear  = today.getFullYear();
+  currentMonth = today.getMonth();
+  renderMonth();
+  if (document.getElementById('view-agenda').classList.contains('active'))
+    renderMonthIntoGrid('daysGridAgenda', 'monthLabelAgenda');
+}
+
+// -- PULSE ANIMATION --
+const styleEl = document.createElement('style');
+styleEl.textContent = `@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }`;
+document.head.appendChild(styleEl);
+
+// -- DIAGNOSTICS --
+function diagLog(msg, isError = false) {
+  const wrapper = document.querySelector('.calendar-wrapper');
+  if (!wrapper) return;
+  let diag = document.getElementById('cal-diag');
+  if (!diag) {
+    diag = document.createElement('div');
+    diag.id = 'cal-diag';
+    diag.style.cssText = 'padding:0.6rem 1rem;font-family:DM Mono,monospace;font-size:0.65rem;color:#666;border-bottom:1px solid #222;line-height:1.8;';
+    wrapper.prepend(diag);
+  }
+  const line = document.createElement('div');
+  line.style.color = isError ? '#f87171' : '#666';
+  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  diag.appendChild(line);
+}
+
+// -- INIT --
+document.addEventListener('DOMContentLoaded', () => {
+  applyConfig(); // ← applica tutti i testi/link da config.js
+  const grid  = document.getElementById('daysGrid');
+  const label = document.getElementById('monthLabel');
+  if (!grid || !label) setTimeout(initCalendar, 200);
+  else initCalendar();
+});
+
+async function initCalendar() {
+  diagLog('Avvio calendario...');
+  const grid = document.getElementById('daysGrid');
+  if (!grid) { diagLog('ERRORE: #daysGrid non trovato nel DOM', true); return; }
+
+  diagLog('Connessione a Google Calendar API...');
+  await fetchCalendarEvents();
+  diagLog(`Caricati ${EVENTS.length} eventi totali`);
+
+  renderMonth();
+  diagLog('Calendario pronto.');
+
+  setTimeout(() => {
+    const diag = document.getElementById('cal-diag');
+    const hasErrors = diag && diag.querySelector('[style*="f87171"]');
+    if (diag && !hasErrors) diag.remove();
+  }, 4000);
+}
+
+// ── FORM TOGGLE ──
+function toggleForm() {
+  const panel = document.getElementById('form-panel');
+  const btn   = document.getElementById('form-toggle-btn');
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    btn.classList.remove('active');
+  } else {
+    panel.classList.add('open');
+    btn.classList.add('active');
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  }
+}
+
+// ── FORM INVIO ──
+function setStatus(msg, ok) {
+  const el = document.getElementById("form-status");
+  el.style.display    = "block";
+  el.style.background = ok ? "rgba(74,222,128,0.1)"  : "rgba(184,55,43,0.15)";
+  el.style.borderLeft = ok ? "2px solid #4ade80"      : "2px solid #b8372b";
+  el.style.color      = ok ? "#86efac"                : "#f87171";
+  el.textContent = msg;
+}
+
+function getFormData() {
+  return {
+    nome:     document.getElementById("f-nome").value.trim(),
+    email:    document.getElementById("f-email").value.trim(),
+    tipo:     document.getElementById("f-tipo").value,
+    start:    document.getElementById("f-start").value,
+    end:      document.getElementById("f-end").value,
+    venue:    document.getElementById("f-venue").value.trim(),
+    msg:      document.getElementById("f-msg").value.trim(),
+    honeypot: document.getElementById("f-website").value,
+  };
+}
+
+function validate(d) {
+  const C = SITE_CONFIG.form;
+  if (!d.nome)                         return C.errNome;
+  if (!d.email || !d.email.includes('@')) return C.errEmail;
+  if (!d.msg)                          return C.errMsg;
+  return null;
+}
+
+function resetForm() {
+  ["f-nome","f-email","f-tipo","f-start","f-end","f-venue","f-msg"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === "SELECT") el.selectedIndex = 0;
+    else el.value = "";
+  });
+  document.getElementById("f-website").value = "";
+}
+
+async function inviaRichiesta() {
+  const d = getFormData();
+  const C = SITE_CONFIG.form;
+
+  if (d.honeypot) return; // bot trap
+
+  const err = validate(d);
+  if (err) { setStatus(err, false); return; }
+
+  const btn   = document.getElementById("submit-btn");
+  const arrow = document.getElementById("submit-arrow");
+  btn.disabled = true;
+  arrow.textContent = "...";
+  setStatus(C.msgInvio, true);
+
+  try {
+    const res = await fetch(FORMSPARK_URL, {
+      method:  "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept":        "application/json",
+      },
+      body: JSON.stringify({
+        _subject:       C.oggettoEmail,
+        Nome:           d.nome,
+        Email:          d.email,
+        Produzione:     d.tipo  || "Non specificata",
+        "Data inizio":  d.start || "Non specificata",
+        "Data fine":    d.end   || "Non specificata",
+        Venue:          d.venue || "Non specificato",
+        Messaggio:      d.msg,
+      }),
+    });
+
+    if (res.ok) {
+      setStatus(C.msgSuccesso, true);
+      resetForm();
+    } else {
+      throw new Error(`Errore ${res.status}`);
+    }
+  } catch (e) {
+    setStatus(C.msgErrore, false);
+  } finally {
+    btn.disabled = false;
+    arrow.textContent = "→";
+  }
+}
+</script>
+</body>
+</html>
