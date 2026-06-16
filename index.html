@@ -109,10 +109,63 @@
     border-bottom: 1px solid var(--border);
   }
 
+  /* ── VIDEO BACKGROUND ── */
+  .hero-video-wrap {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    background: #000; /* fallback mentre il video carica */
+  }
+
+  #hero-video {
+    position: absolute;
+    top: 50%; left: 50%;
+    /* copertura tipo background-size: cover */
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    /* il video parte visibile — l'opacità viene gestita via JS */
+    opacity: 1;
+    transition: opacity 0.6s ease;
+  }
+
+  /* Overlay scuro sopra al video, prima del gradiente */
+  .hero-video-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0); /* opacità impostata via JS da config */
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Gradiente bottom-fade per leggibilità testo */
+  .hero-video-fade {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 40%,
+      rgba(10,10,10,0.6) 70%,
+      rgba(10,10,10,0.92) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Manteniamo la linea di scena come dettaglio visivo */
+  .hero-stage-line {
+    position: absolute;
+    top: 25%; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    z-index: 3;
+  }
+
+  /* Fallback curtain — mostrato solo se il video non è disponibile */
   .hero-curtain {
     position: absolute; inset: 0;
     background: linear-gradient(135deg, #1a0a00 0%, #0a0a0a 50%, #0a0505 100%);
     overflow: hidden;
+    display: none; /* nascosto di default, attivato via JS se il video fallisce */
   }
 
   .hero-curtain::before {
@@ -133,15 +186,34 @@
     opacity: 0.3;
   }
 
-  .hero-stage-line {
+  /* Indicatore scroll con hint visivo del video interattivo */
+  .hero-scroll-hint {
     position: absolute;
-    top: 25%; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    right: 3rem; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.5);
+    z-index: 10;
+    opacity: 0; /* appare dopo intro, gestito via JS */
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+
+  .hero-scroll-hint svg {
+    animation: bounceY 2s ease-in-out infinite;
+  }
+
+  @keyframes bounceY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
   }
 
   .hero-content {
-    position: relative; z-index: 2;
+    position: relative; z-index: 10;
     max-width: 900px;
   }
 
@@ -187,7 +259,7 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--gray-light);
-    z-index: 2;
+    z-index: 10;
   }
 
   .hero-scroll-line {
@@ -924,7 +996,24 @@
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-curtain">
+
+  <!-- Video background -->
+  <div class="hero-video-wrap">
+    <video id="hero-video"
+      preload="auto"
+      muted
+      playsinline
+      webkit-playsinline
+      disablePictureInPicture
+      aria-hidden="true">
+      <!-- src viene impostato da JS leggendo SITE_CONFIG.hero_video.src -->
+    </video>
+    <div class="hero-video-overlay" id="hero-video-overlay"></div>
+    <div class="hero-video-fade"></div>
+  </div>
+
+  <!-- Fallback curtain (mostrato se il video non è disponibile) -->
+  <div class="hero-curtain" id="hero-curtain">
     <div class="hero-stage-line"></div>
   </div>
 
@@ -932,6 +1021,15 @@
     <p class="hero-label" id="hero-label"></p>
     <h1 class="hero-name" id="hero-name"></h1>
     <p class="hero-tagline" id="hero-tagline"></p>
+  </div>
+
+  <!-- Hint scroll interattivo (appare dopo l'intro) -->
+  <div class="hero-scroll-hint" id="hero-scroll-hint">
+    <svg width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="1" y="1" width="12" height="18" rx="6"/>
+      <line x1="7" y1="5" x2="7" y2="9"/>
+    </svg>
+    Scorri
   </div>
 
   <div class="hero-scroll">
@@ -1242,8 +1340,131 @@ function applyConfig() {
 }
 
 // =============================================================
-//  CALENDARIO — LOGICA
+//  VIDEO HERO — LOGICA
+//
+//  Fasi:
+//  1. INTRO  : il video parte da 0 e va in autoplay fino a introEnd,
+//              poi si ferma (i fari sono puntati in basso).
+//  2. SCROLL : da introEnd a scrollEnd, la posizione del video segue
+//              lo scroll dell'utente all'interno della hero section.
+//  3. FALLBACK: se il video non si carica, viene mostrato il curtain
+//              statico originale.
+//
+//  Tutto il timing si configura in SITE_CONFIG.hero_video
 // =============================================================
+
+(function initHeroVideo() {
+  const VC = SITE_CONFIG.hero_video;
+  if (!VC || !VC.src) return; // nessun video configurato
+
+  const video   = document.getElementById('hero-video');
+  const overlay = document.getElementById('hero-video-overlay');
+  const curtain = document.getElementById('hero-curtain');
+  const hint    = document.getElementById('hero-scroll-hint');
+  const hero    = document.getElementById('home');
+
+  if (!video) return;
+
+  // Imposta src dal config
+  video.src = VC.src;
+
+  // Overlay opacity dal config
+  if (overlay) overlay.style.background = `rgba(0,0,0,${VC.overlayOpacity ?? 0.45})`;
+
+  // ── INQUADRATURA (zoom + posizione) ──────────────────────────
+  //  Il video ha già object-fit:cover che lo fa riempire il frame.
+  //  Applichiamo uno scale() e un translate() aggiuntivi tramite
+  //  CSS custom properties, così config.js è l'unico punto di controllo.
+  //
+  //  Nota: translate() sposta il video nel suo sistema di coordinate
+  //  (post-scale), quindi l'effetto visivo è intuitivo: posX "-10%"
+  //  fa scorrere il contenuto verso sinistra.
+  (function applyFraming() {
+    const zoom = VC.zoom ?? 1.0;
+    const posX = VC.posX ?? '0%';
+    const posY = VC.posY ?? '0%';
+    // Combiniamo con il translate(-50%,-50%) che già centra il video
+    // nel wrapper. Usiamo un wrapper intermedio per non interferire.
+    video.style.transform = `translate(-50%, -50%) scale(${zoom}) translate(${posX}, ${posY})`;
+  })();
+
+  let introComplete = false;
+  let rafId = null;
+
+  // ── FASE 1: INTRO ──────────────────────────────────────────
+  function startIntro() {
+    video.currentTime = 0;
+
+    // Tenta autoplay; se il browser lo blocca (poco probabile con muted)
+    // saltiamo direttamente al frame introEnd
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay bloccato → vai direttamente al frame fermo
+        video.currentTime = VC.introEnd;
+        finishIntro();
+      });
+    }
+  }
+
+  // ── Controlla ogni frame se abbiamo superato introEnd ──
+  function onTimeUpdate() {
+    if (!introComplete && video.currentTime >= VC.introEnd) {
+      video.pause();
+      video.currentTime = VC.introEnd;
+      finishIntro();
+    }
+  }
+
+  function finishIntro() {
+    introComplete = true;
+    video.removeEventListener('timeupdate', onTimeUpdate);
+    // Mostra l'hint di scroll
+    if (hint) hint.style.opacity = '1';
+    // Attiva il controllo via scroll
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // calcola subito la posizione corrente
+  }
+
+  // ── FASE 2: SCROLL ─────────────────────────────────────────
+  function onScroll() {
+    if (rafId) return; // throttle con requestAnimationFrame
+    rafId = requestAnimationFrame(() => {
+      rafId = null;
+      const heroH   = hero.offsetHeight;
+      const scrollY = window.scrollY;
+      // Lo scroll utile è da 0 a heroH (fine della hero section)
+      const t = Math.min(Math.max(scrollY / heroH, 0), 1);
+      // Mappa t → da scrollStart a scrollEnd
+      const newTime = VC.scrollStart + t * (VC.scrollEnd - VC.scrollStart);
+      // Imposta il frame solo se è cambiato (evita jank)
+      if (Math.abs(video.currentTime - newTime) > 0.016) {
+        video.currentTime = newTime;
+      }
+    });
+  }
+
+  // ── FALLBACK: video non disponibile ──────────────────────────
+  function showFallback() {
+    const wrap = document.querySelector('.hero-video-wrap');
+    if (wrap) wrap.style.display = 'none';
+    if (curtain) curtain.style.display = 'block';
+  }
+
+  video.addEventListener('error', showFallback);
+  video.addEventListener('timeupdate', onTimeUpdate);
+
+  // Aspetta che il video sia pronto (metadata caricata) prima di farlo partire
+  if (video.readyState >= 1) {
+    startIntro();
+  } else {
+    video.addEventListener('loadedmetadata', startIntro, { once: true });
+    // Timeout di sicurezza: se in 4s non carica, fallback
+    setTimeout(() => {
+      if (!introComplete && video.readyState < 1) showFallback();
+    }, 4000);
+  }
+})();
 
 // =============================================================
 //  SICUREZZA API KEY — note
