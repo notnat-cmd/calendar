@@ -1701,7 +1701,9 @@ function renderMonthIntoGrid(gridId, labelId) {
     numEl.textContent = day;
     cell.appendChild(numEl);
 
-    if (!isOther && !isPast) {
+    // Mostra disponibilità anche per i giorni del mese successivo in coda
+    const isNextMonthOverflow = isOther && (i >= startDow + daysInMonth);
+    if ((!isOther || isNextMonthOverflow) && !isPast) {
       const { type, label } = getDayStatus(dateStr);
       const eventsEl = document.createElement('div');
       eventsEl.className = 'day-events';
