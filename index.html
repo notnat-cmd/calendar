@@ -1538,9 +1538,9 @@ function setLoading(state) {
 // -- FETCH EVENTS FROM GOOGLE CALENDAR API --
 async function fetchCalendarEvents() {
   const rangeStart = new Date();
-  rangeStart.setMonth(rangeStart.getMonth() - 3);
+  rangeStart.setDate(rangeStart.getDate() - 1);
   const rangeEnd = new Date();
-  rangeEnd.setMonth(rangeEnd.getMonth() + 6);
+  rangeEnd.setMonth(rangeEnd.getMonth() + 12);
 
   const timeMin = rangeStart.toISOString();
   const timeMax = rangeEnd.toISOString();
@@ -1559,7 +1559,7 @@ async function fetchCalendarEvents() {
         timeMax,
         singleEvents: 'true',
         orderBy:      'startTime',
-        maxResults:   '250',
+        maxResults:   '2500',
       });
       const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?${params.toString()}`;
 
