@@ -151,17 +151,12 @@ const SITE_CONFIG = {
 
     // ID dei calendari Google
     // Ogni oggetto: { id, label, type }
-    // type può essere: "occupato" | "tentativo"
+    // type può essere: "occupato"
     calendari: [
       {
         id:    "6ffa36777c748f71faaa4bfa7db8ef0ebbfb026dac9f5be9d311fb347a2d9d95@group.calendar.google.com",
         label: "Impegnato",
         type:  "occupato",
-      },
-      {
-        id:    "e94ea22f00a71664506c8d4303c36734c5d9e7d58f6042d4a9f0d958deb19c9a@group.calendar.google.com",
-        label: "Da confermare",
-        type:  "tentativo",
       },
     ],
   },
