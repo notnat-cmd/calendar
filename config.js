@@ -93,6 +93,52 @@ const SITE_CONFIG = {
     oggettoEmail: "NUOVO CONTATTO DAL SITO",
   },
 
+  // ── VIDEO HERO ────────────────────────────────────────────────────────
+  //
+  //  Sostituisci il file video rinominandolo (o aggiorna `src` qui sotto).
+  //  I tre tempi sono in secondi e si riferiscono alla timeline del video:
+  //
+  //    introEnd   → il video si ferma qui dopo l'intro automatica
+  //                 (frame con i fari puntati in basso, titolo già visibile)
+  //    scrollStart → da questo punto in poi lo scroll muove i fari
+  //                 (di solito uguale a introEnd, ma può essere diverso)
+  //    scrollEnd  → frame finale quando i fari puntano in camera
+  //                 (massimo scroll = questo frame)
+  //
+  hero_video: {
+    src:         "hero.mp4",   // ← rinomina il tuo file o cambia questo percorso
+    introEnd:    2,          // secondi: dove si ferma l'intro automatica
+    scrollStart: 3,          // secondi: inizio del controllo via scroll
+    scrollEnd:   7.8,          // secondi: fine del controllo via scroll (fari in camera)
+    overlayOpacity: 0.20,      // 0 = nessun overlay scuro, 1 = completamente nero
+
+    // ── INQUADRATURA ──────────────────────────────────────────────────
+    //
+    //  zoom  → scala del video rispetto al cover di default.
+    //          1.0 = nessuno zoom (riempie il frame come prima).
+    //          1.3 = ingrandito del 30% (zoom in, si taglia ai bordi).
+    //          0.8 = rimpicciolito (dezoom, appaiono bande nere ai lati).
+    //
+    //  posX  → sposta il contenuto orizzontalmente, in % della larghezza video.
+    //          "0%"   = centrato.
+    //          "-10%" = il contenuto si sposta a sinistra
+    //                   (entra nel frame la parte destra del video).
+    //          "+10%" = il contenuto si sposta a destra.
+    //
+    //  posY  → sposta il contenuto verticalmente, in % dell'altezza video.
+    //          "0%"   = centrato.
+    //          "-15%" = il contenuto si sposta in alto
+    //                   (entra nel frame la parte bassa del video).
+    //          "+15%" = il contenuto si sposta in basso.
+    //
+    //  Flusso consigliato: apri il video in VLC, vai al frame chiave,
+    //  poi regola queste tre variabili finché l'inquadratura ti convince.
+    //
+    zoom: 1.0,    // 1.0 = default  |  1.3 = zoom in 30%
+    posX: "0%",   // "0%" = centro  |  "-10%" = contenuto a sinistra
+    posY: "-10%",   // "0%" = centro  |  "-15%" = contenuto in alto
+  },
+
   // ── INTEGRAZIONI ──────────────────────────────────────────────────────
   integrazioni: {
     // Formspark — endpoint del form di contatto
