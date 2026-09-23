@@ -353,7 +353,6 @@
   .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
   .dot-disponibile { background: #4ade80; }
   .dot-occupato { background: var(--red); }
-  .dot-tentativo { background: var(--gold); }
 
   /* CALENDAR WRAPPER */
   .calendar-wrapper {
@@ -503,7 +502,6 @@
 
   .event-pill.occupato { background: rgba(184,55,43,0.7); color: #ffd0cc; }
   .event-pill.disponibile { background: rgba(74,222,128,0.2); color: #86efac; }
-  .event-pill.tentativo { background: rgba(201,168,76,0.25); color: var(--gold-light); }
 
   /* AGENDA VIEW */
   .agenda-list { padding: 1rem; }
@@ -572,7 +570,6 @@
 
   .badge-occupato { background: rgba(184,55,43,0.2); color: #f87171; border: 1px solid rgba(184,55,43,0.4); }
   .badge-disponibile { background: rgba(74,222,128,0.1); color: #86efac; border: 1px solid rgba(74,222,128,0.3); }
-  .badge-tentativo { background: rgba(201,168,76,0.1); color: var(--gold-light); border: 1px solid var(--border); }
 
   /* ── CONTATTI ── */
   #contatti { background: #0a0a0a; }
@@ -1056,7 +1053,6 @@
   <div class="cal-legend">
     <span class="legend-item"><span class="legend-dot dot-disponibile"></span>Disponibile (default)</span>
     <span class="legend-item"><span class="legend-dot dot-occupato"></span>Impegnato</span>
-    <span class="legend-item"><span class="legend-dot dot-tentativo"></span>Da confermare</span>
   </div>
 
   <div class="calendar-wrapper">
@@ -1645,8 +1641,6 @@ function getDayStatus(dateStr) {
   const evs = getEventsForDate(dateStr);
   if (evs.some(e => e.type === 'occupato'))
     return { type: 'occupato',  label: evs.find(e => e.type === 'occupato').title };
-  if (evs.some(e => e.type === 'tentativo'))
-    return { type: 'tentativo', label: evs.find(e => e.type === 'tentativo').title };
   return { type: 'disponibile', label: 'Disponibile' };
 }
 
@@ -1775,8 +1769,7 @@ function renderAgenda() {
           ${venue ? `<div class="agenda-venue">${venue}</div>` : ''}
         </div>
         <span class="agenda-badge badge-${type}">${
-          type === 'occupato'  ? 'Impegnato' :
-          type === 'tentativo' ? 'Da conf.'  : 'Libero'
+          type === 'occupato'  ? 'Impegnato' : 'Libero'
         }</span>
       `;
       groupEl.appendChild(item);
